@@ -21,10 +21,10 @@ Route::post('/login', [
     'uses' => 'Auth\LoginController@doLogin'
 ]);
 
-Route::get('/home', 'HomeController@index');
+Route::get('currency/conversion', 'CurrencyController@conversion');
+Route::get('currency/admin', [ 'as' => 'currency.admin', 'uses' => 'CurrencyController@admin' ] );
+Route::post('currency/add', [ 'as' => 'currency.add', 'uses' => 'CurrencyController@add'] );
 
-Route::get('/currency/conversion', 'CurrencyController@conversion');
-Route::get('/currency/admin', [ 'as' => 'currency.admin', 'uses' => 'CurrencyController@admin' ] );
-Route::post('/currency/add', [ 'as' => 'currency.add', 'uses' => 'CurrencyController@add'] );
-
-Route::post('/api/currency-convert', [ 'as' => 'currency.conversion', 'uses' => 'APIController@currencyConversion'] );
+Route::group(['prefix' => 'api'], function(){
+	Route::post('currency-convert', [ 'as' => 'currency.conversion', 'uses' => 'APIController@currencyConversion'] );
+});
