@@ -3,8 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogsActivityInterface;
+use Spatie\Activitylog\LogsActivity;
 
-class Currency extends Model {
+class Currency extends Model implements LogsActivityInterface {
+    use LogsActivity;
+
     public $table = "currency";
 
 	public $primaryKey = "id";
@@ -42,4 +46,25 @@ class Currency extends Model {
         return $exchange_rate;
     }
 
+    /**
+     * Get the message that needs to be logged for the given event name.
+     *
+     * @param string $eventName
+     * @return string
+     */
+    public function getActivityDescriptionForEvent($eventName)
+    {
+        switch( $eventName ) {
+            case 'created':
+                $message = 'Currency "' . $this->currency . '" was created';
+                break;
+            case 'updated':
+                $message = 'Currency "' . $this->currency . '" was updated';
+                break;
+            default:
+                $message = '';
+                break;
+        }
+        return $message;
+    }
 }

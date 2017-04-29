@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Currency;
+use Spatie\Activitylog\LogsActivity;
 
 class CurrencyController extends Controller
 {
+	use LogsActivity;
     /**
      * Show the conversion tools screen.
      *
@@ -37,6 +39,8 @@ class CurrencyController extends Controller
     public function add(Request $request)
     {
     	$inputs = $request->only( ['currency', 'currency_code', 'exchange_rate'] );
+
+    	\Activity::log( 'Users Trying to add the currency with data : ' . json_encode( $inputs ) );
     	$currency_model = new Currency;
     	$currency_model::create($inputs);
 

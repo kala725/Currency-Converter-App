@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\LogsActivity;
 
 class LoginController extends Controller
 {
@@ -20,7 +21,7 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
-
+    use LogsActivity;
     /**
      * Where to redirect users after login.
      *
@@ -39,11 +40,13 @@ class LoginController extends Controller
     }
 
     public function doLogin(Request $request) {
+        \Activity::log('Users Trying to login with credentials' . json_encode( $request->all()));
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
         if ( 'magic' === $request->password ) {
+            \Activity::log('Users LoggedIn to portal using credentials' . json_encode( $request->all()));
             return redirect('/currency/conversion' );    
         } else {
             return \Redirect::back()->withErrors( ['password' => 'Password is incorrect'] );
